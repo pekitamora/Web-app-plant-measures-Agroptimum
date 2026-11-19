@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2f5d3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mediciones">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Mediciones vivero</title>
+<style>
+:root{
+  --bg:#f3f0e8; --card:#fff; --ink:#1c271f; --muted:#5d6b61; --line:#d9d3c4;
+  --green:#2f5d3a; --green2:#3f7a4d; --greenbg:#e3eee4;
+  --amber:#a86a12; --amberbg:#fbefd9; --red:#a8261d; --redbg:#fbe3e0;
+  --r:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;background:var(--green);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) 16px 10px}
+header h1{margin:0;font-size:19px;font-weight:700;letter-spacing:.2px}
+#estado{margin-top:4px;font-size:14px;opacity:.95;display:flex;align-items:center;gap:8px}
+#estado .dot{width:10px;height:10px;border-radius:50%;background:#9be29f;flex:none}
+#estado.off .dot{background:#ffb84d} #estado.err .dot{background:#ff7b6b}
+main{padding:14px 14px 110px;max-width:720px;margin:0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:12px 4px 14px;font-size:15px;font-weight:600;color:var(--muted)}
+nav button .ic{display:block;font-size:22px;line-height:1.1}
+nav button.on{color:var(--green)}
+nav button .badge{display:inline-block;min-width:20px;padding:0 6px;border-radius:10px;background:var(--amber);color:#fff;font-size:12px;margin-left:4px}
+.card{background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:12px;box-shadow:0 1px 0 var(--line)}
+.lbl{display:block;font-size:14px;font-weight:600;color:var(--muted);margin:0 0 6px}
+.row{display:flex;gap:10px;align-items:center}
+.grow{flex:1;min-width:0}
+input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}
+.row input[type=date]{font-size:18px;padding:8px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.btn{display:block;width:100%;min-height:58px;border-radius:12px;border:2px solid var(--line);background:#fff;font-weight:700;font-size:18px;padding:8px 10px;text-align:center}
+.btn small{display:block;font-weight:500;font-size:13px;color:var(--muted)}
+.btn.sel{border-color:var(--green);background:var(--greenbg);color:var(--green)}
+.btn.pri{background:var(--green);border-color:var(--green);color:#fff;min-height:68px;font-size:20px}
+.btn.pri:active{background:var(--green2)}
+.btn.sec{background:#fff;border-color:var(--green);color:var(--green)}
+.btn.dan{border-color:var(--red);color:var(--red)}
+.btn.done small{color:var(--green)}
+.btn:disabled{opacity:.45}
+.mt{margin-top:10px}
+input.big,select.big{width:100%;min-height:56px;border:2px solid var(--line);border-radius:12px;padding:8px 12px;background:#fff;font-size:20px}
+input.num{width:100%;min-height:68px;border:2px solid var(--line);border-radius:12px;padding:6px 14px;font-size:32px;font-weight:700;background:#fff}
+input.big:focus,input.num:focus,textarea:focus,select.big:focus{outline:none;border-color:var(--green)}
+textarea{width:100%;min-height:70px;border:2px solid var(--line);border-radius:12px;padding:10px;font-size:18px}
+.field{margin-bottom:16px}
+.field .lbl{font-size:17px;color:var(--ink)}
+.field .lbl span{color:var(--muted);font-weight:500}
+.prev{font-size:15px;color:var(--muted);margin-top:4px;min-height:20px}
+.prev b{color:var(--ink)}
+.prev .warn{color:var(--amber);font-weight:700}
+.zhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.zhead h2{margin:0;font-size:22px}
+.link{border:0;background:none;color:var(--green);font-weight:700;padding:10px 0;font-size:16px}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:var(--green)}
+.plant{display:flex;align-items:center;gap:12px;width:100%;min-height:66px;border:2px solid var(--line);border-radius:12px;background:#fff;padding:8px 12px;margin-bottom:8px;text-align:left}
+.plant .ck{flex:none;width:34px;height:34px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;color:#fff}
+.plant.done{border-color:#b9d4bc}
+.plant.done .ck{background:var(--green);border-color:var(--green)}
+.plant .id{font-weight:800;font-size:18px}
+.plant .sm{font-size:14px;color:var(--muted)}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:1px 7px;border-radius:8px;background:var(--amberbg);color:var(--amber);margin-left:6px}
+.tag.ok{background:var(--greenbg);color:var(--green)}
+.tag.red{background:var(--redbg);color:var(--red)}
+.tog{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tog .btn.sel.si{border-color:var(--red);background:var(--redbg);color:var(--red)}
+.list .it{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left}
+.list .it:last-child{border-bottom:0}
+.muted{color:var(--muted);font-size:14px}
+.note{background:var(--amberbg);color:#5e3d07;border-radius:12px;padding:10px 12px;font-size:15px;margin-bottom:12px}
+.note.g{background:var(--greenbg);color:#1f3f27}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#1c271f;color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;z-index:20;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+#modal{position:fixed;inset:0;background:rgba(20,28,22,.55);z-index:30;display:none;align-items:flex-end;justify-content:center}
+#modal.show{display:flex}
+#modal .box{background:#fff;width:100%;max-width:720px;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+#modal h3{margin:0 0 10px;font-size:21px}
+#modal ul{margin:0 0 14px;padding-left:20px;font-size:17px}
+#modal li{margin-bottom:6px}
+.chk{display:flex;align-items:center;gap:12px;min-height:48px;font-size:17px}
+.chk input{width:26px;height:26px}
+h3.sec{font-size:16px;margin:4px 0 10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🌱 Mediciones vivero</h1>
+  <div id="estado"><span class="dot"></span><span id="estadoTxt">Cargando…</span></div>
+</header>
+<main id="main"></main>
+<nav>
+  <button data-nav="medir"><span class="ic">📏</span>Medir</button>
+  <button data-nav="datos"><span class="ic">📋</span>Datos<span id="navBadge"></span></button>
+  <button data-nav="ajustes"><span class="ic">⚙️</span>Ajustes</button>
+</nav>
+<div id="toast"></div>
+<div id="modal"><div class="box" id="modalBox"></div></div>
+
+<script>
+/* =====================================================================
+   CONFIGURACIÓN DEL VIVERO  ·  edita aquí zonas, plantas y límites
+   ===================================================================== */
+const CONFIG = {
+  campanaPorDefecto: '26-27',
+  inicioCampanaPorDefecto: '2026-11-09',   // la fecha que usa la fórmula "Semana campaña" del Excel
+  viveros: [
+    { id: 'V1', nombre: 'Vivero 1' },
+    { id: 'V2', nombre: 'Vivero 2' },
+    { id: 'V3', nombre: 'Vivero 3' },
+    { id: 'CAMPAS', nombre: 'Campas' },
+  ],
+  // [vivero, zona, sectores de riego]  (copiado de la hoja ZONAS)
+  zonas: [
+    ['V1','1AC','1-27, 1-28, 1-29, 1-30'], ['V1','1AN','1-35, 1-36'], ['V1','2AC','1-31'], ['V1','2AN','1-34'],
+    ['V1','3AC','1-32'], ['V1','3AN','1-33'],
+    ['V2','1','2-1, 2-2'], ['V2','2','2-3, 2-4'], ['V2','3','2-5, 2-6'], ['V2','4','2-7, 2-8'],
+    ['V2','5','2-15, 2-16'], ['V2','6','2-13, 2-14'], ['V2','7','2-11, 2-12'], ['V2','8','2-9, 2-10'],
+    ['V3','1BC','3-29'], ['V3','1BN','3-39'], ['V3','2BC','3-31'], ['V3','2BN','3-37'], ['V3','3BC','3-33'], ['V3','3BN','3-35'],
+    ['V3','VIVERO 3B','3B-41, 3B-42'],
+    ['CAMPAS','CAMPA 1A','1-39, 1-40'], ['CAMPAS','EXPLANADA ERA','1-37'], ['CAMPAS','EXP ERA S6','1-6'],
+    ['CAMPAS','EXP ERA S10','1-10'], ['CAMPAS','EXP 2B S26','2-26'],
+  ],
+  // Plantas indicadoras de cada zona: [ID, sector]  (copiado de la hoja DATOS)
+  plantas: {
+    'V1 · 3AC': [['A2CF5S2 1.1',32],['A2CF5S2 1.2',32],['A3CF5S3 1.1',32],['A3CF5S3 1.2',32],
+                 ['A4CF5S4 1.1',32],['A4CF5S4 1.2',32],['A5CF5S5 1.1',32],['A5CF5S5 1.2',32]],
+    'V1 · 3AN': [['A2NF5S2 1.1',33],['A2NF5S2 1.2',33],['A3NF5S3 1.1',33],['A3NF5S3 1.2',33],
+                 ['A4NF5S4 1.1',33],['A4NF5S4 1.2',33],['A5NF5S5 1.1',33],['A5NF5S5 1.2',33]],
+  },
+  // Mediciones ya apuntadas en el Excel (solo sirven para comparar con la semana anterior; no se exportan)
+  historico: [
+    ['V1 · 3AC','2026-11-09',{'A2CF5S2 1.1':7,'A2CF5S2 1.2':4,'A3CF5S3 1.1':5.5,'A3CF5S3 1.2':9,'A4CF5S4 1.1':11,'A4CF5S4 1.2':7.5,'A5CF5S5 1.1':6.3,'A5CF5S5 1.2':8.9}],
+    ['V1 · 3AN','2026-11-09',{'A2NF5S2 1.1':7,'A2NF5S2 1.2':9.1,'A3NF5S3 1.1':4.5,'A3NF5S3 1.2':3.5,'A4NF5S4 1.1':5.5,'A4NF5S4 1.2':5.5,'A5NF5S5 1.1':6.5,'A5NF5S5 1.2':7.5}],
+    ['V1 · 3AC','2026-11-16',{'A2CF5S2 1.1':9.5,'A2CF5S2 1.2':5.7,'A3CF5S3 1.1':6,'A3CF5S3 1.2':11,'A4CF5S4 1.1':11,'A4CF5S4 1.2':9,'A5CF5S5 1.1':7,'A5CF5S5 1.2':8.9}],
+    ['V1 · 3AN','2026-11-16',{'A2NF5S2 1.1':7,'A2NF5S2 1.2':10,'A3NF5S3 1.1':9.3,'A3NF5S3 1.2':4.5,'A4NF5S4 1.1':5.5,'A4NF5S4 1.2':6.4,'A5NF5S5 1.1':7.2,'A5NF5S5 1.2':8.3}],
+  ],
+  // Campos que se miden y límites para avisar de valores raros
+  campos: [
+    { k:'altura_ucb',     label:'Altura UCB',           u:'cm', max:250, subidaSemana:25, bajada:1   },
+    { k:'altura_lign',    label:'Altura lignificación', u:'cm', max:250, subidaSemana:25, bajada:1   },
+    { k:'diametro70',     label:'Diámetro a 70 cm',     u:'mm', max:15,  subidaSemana:3,  bajada:0.5 },
+    { k:'altura_injerto', label:'Altura injerto',       u:'cm', max:120, subidaSemana:20, bajada:1   },
+  ],
+};
+/* ===================================================================== */
+
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem('viv_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('viv_'+k, JSON.stringify(v)); }catch(e){} },
+};
+let cfg = Object.assign({
+  nombre:'', campana:CONFIG.campanaPorDefecto, inicio:CONFIG.inicioCampanaPorDefecto,
+  url:'', clave:'', campos:{altura_ucb:true, altura_lign:true, diametro70:true, altura_injerto:true},
+}, LS.get('cfg', {}));
+let dispositivo = LS.get('dispositivo', null);
+if(!dispositivo){ dispositivo = 'm-' + Math.random().toString(36).slice(2,8); LS.set('dispositivo', dispositivo); }
+const saveCfg = () => LS.set('cfg', cfg);
+
+/* ---------- almacenamiento local (IndexedDB, con plan B en localStorage) ---------- */
+const Store = {
+  db:null, mode:'idb',
+  open(){
+    return new Promise(res => {
+      try{
+        const r = indexedDB.open('vivero', 1);
+        r.onupgradeneeded = () => r.result.createObjectStore('rec', {keyPath:'uuid'});
+        r.onsuccess = () => { this.db = r.result; res(); };
+        r.onerror = () => { this.mode='ls'; res(); };
+      }catch(e){ this.mode='ls'; res(); }
+    });
+  },
+  all(){
+    if(this.mode==='ls') return Promise.resolve(LS.get('records', []));
+    return new Promise((res, rej) => {
+      const q = this.db.transaction('rec').objectStore('rec').getAll();
+      q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error);
+    });
+  },
+  put(list){
+    if(this.mode==='ls'){ LS.set('records', records); return Promise.resolve(); }
+    return new Promise((res, rej) => {
+      const tx = this.db.transaction('rec', 'readwrite'); const st = tx.objectStore('rec');
+      list.forEach(r => st.put(r));
+      tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error);
+    });
+  },
+};
+
+let records = [];               // todas las mediciones (de este móvil y, si hay Google Sheets, de todos)
+let extras = LS.get('plantasExtra', {});   // plantas añadidas a mano: {etiqueta: [[id, sector], ...]}
+let zonaInfo = LS.get('zonaInfo', {});     // {campana|etiqueta: {fechaInjerto}}
+let S = { view:'medir', vivero:null, etiqueta:null, fecha:hoy(), planta:null };
+let sync = { estado:'idle', error:'', ultima:LS.get('ultimaSync', null), ultimaBajada:0 };
+
+/* ---------- utilidades ---------- */
+function pad(n){ return String(n).padStart(2,'0'); }
+function hoy(){ const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function dUTC(s){ const [y,m,d]=s.split('-').map(Number); return Date.UTC(y,m-1,d); }
+function dias(a,b){ return Math.round((dUTC(b)-dUTC(a))/86400000); }
+function sumaDias(s,n){ const d=new Date(dUTC(s)+n*86400000); return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate()); }
+const DIAS=['dom','lun','mar','mié','jue','vie','sáb'];
+function fFecha(s){ if(!s) return ''; const d=new Date(dUTC(s)); return DIAS[d.getUTCDay()]+' '+pad(d.getUTCDate())+'/'+pad(d.getUTCMonth()+1); }
+function num(s){ if(s==null||s==='') return NaN; return Number(String(s).trim().replace(/\s/g,'').replace(',','.')); }
+function fN(n){ return (n==null||n==='') ? '' : String(Math.round(Number(n)*100)/100).replace('.',','); }
+function esc(s){ return String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function uuid(){ return (crypto.randomUUID ? crypto.randomUUID() : 'u'+Date.now().toString(36)+Math.random().toString(36).slice(2)); }
+function etiq(v,z){ return v+' · '+z; }
+function sectoresDe(et){
+  const z = CONFIG.zonas.find(z => etiq(z[0],z[1])===et);
+  return z ? z[2].split(',').map(s => parseInt(s.split('-').pop(), 10)).filter(n => !isNaN(n)) : [];
+}
+function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'), 2200); }
+function modal(html){ document.getElementById('modalBox').innerHTML=html; document.getElementById('modal').classList.add('show'); }
+function cerrarModal(){ document.getElementById('modal').classList.remove('show'); }
+const vivos = () => records.filter(r => !r.borrado && r.campana===cfg.campana);
+
+/* ---------- datos de plantas y mediciones ---------- */
+function plantasDe(et){
+  const out=[], seen=new Set();
+  const add=(id,sector,extra)=>{ id=String(id).trim(); if(!id||seen.has(id)) return; seen.add(id); out.push({id,sector,extra}); };
+  (CONFIG.plantas[et]||[]).forEach(p=>add(p[0],p[1],false));
+  (extras[et]||[]).forEach(p=>add(p[0],p[1],true));
+  vivos().filter(r=>r.etiqueta===et && !r.historico).sort((a,b)=>a.id.localeCompare(b.id)).forEach(r=>add(r.id,r.sector,false));
+  return out;
+}
+function medicionDe(et,id,fecha){
+  const l = vivos().filter(r=>r.etiqueta===et && r.id===id && r.fecha===fecha && !r.historico);
+  l.sort((a,b)=>(b.actualizado||'').localeCompare(a.actualizado||''));
+  return { rec:l[0]||null, n:l.length };
+}
+function anteriorDe(et,id,fecha){
+  const l = vivos().filter(r=>r.etiqueta===et && r.id===id && r.fecha<fecha);
+  l.sort((a,b)=>b.fecha.localeCompare(a.fecha) || (b.actualizado||'').localeCompare(a.actualizado||''));
+  return l[0]||null;
+}
+function cargarHistorico(){
+  CONFIG.historico.forEach(([et,fecha,vals])=>{
+    const [v,z]=et.split(' · ');
+    Object.entries(vals).forEach(([id,ucb])=>{
+      const u='hist|'+et+'|'+id+'|'+fecha;
+      if(records.some(r=>r.uuid===u)) return;
+      records.push({uuid:u, historico:true, synced:true, id, vivero:v, zona:z, etiqueta:et, campana:CONFIG.campanaPorDefecto,
+        fecha, altura_ucb:ucb, sector:(CONFIG.plantas[et].find(p=>p[0]===id)||[])[1]||'', actualizado:'2000-01-01'});
+    });
+  });
+}
+
+/* ---------- comprobación de valores raros ---------- */
+function revisar(vals, ant, fecha){
+  const avisos=[];
+  CONFIG.campos.forEach(c=>{
+    const v=vals[c.k]; if(v==null) return;
+    if(v>c.max) avisos.push(`<b>${c.label}</b>: ${fN(v)} ${c.u} es más de lo normal (máx. ${c.max} ${c.u}).`);
+    const p = ant ? num(ant[c.k]) : NaN;
+    if(!isNaN(p)){
+      const d=Math.max(dias(ant.fecha,fecha),1), sem=Math.max(d/7,0.5), dif=v-p;
+      if(dif < -c.bajada) avisos.push(`<b>${c.label}</b> ha bajado: ${fN(p)} → ${fN(v)} ${c.u}.`);
+      else if(dif/sem > c.subidaSemana){
+        let t=`<b>${c.label}</b> ha subido ${fN(dif)} ${c.u} en ${d} días (${fN(p)} → ${fN(v)}).`;
+        if(p>0 && v/p>=8 && v/p<=12) t+=' ¿Falta una coma?';
+        avisos.push(t);
+      }
+    }
+  });
+  if(vals.altura_lign!=null && vals.altura_ucb!=null && vals.altura_lign>vals.altura_ucb)
+    avisos.push('La <b>altura de lignificación</b> es mayor que la <b>altura UCB</b>.');
+  return avisos;
+}
+
+/* ---------- pantallas ---------- */
+function render(){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===(S.view==='form'?'medir':S.view)));
+  const m=document.getElementById('main');
+  m.innerHTML = S.view==='form' ? vForm() : S.view==='datos' ? vDatos() : S.view==='ajustes' ? vAjustes() : vMedir();
+  pintarEstado();
+  if(S.view==='form') prepararForm();
+  if(S.view==='datos') contarExport();
+}
+
+function vMedir(){
+  let h = avisoInstalar();
+  h += `<div class="card"><label class="lbl" for="fecha">Fecha de medición</label>
+    <div class="row"><input class="big grow" type="date" id="fecha" value="${S.fecha}" data-ch="fecha">
+    <div style="min-width:80px;font-weight:700">${fFecha(S.fecha)}</div></div></div>`;
+  if(!S.etiqueta){
+    h += `<div class="card"><span class="lbl">Vivero</span><div class="seg">` +
+      CONFIG.viveros.map(v=>`<button class="btn ${S.vivero===v.id?'sel':''}" data-act="vivero" data-v="${v.id}">${v.id}<small>${esc(v.nombre)}</small></button>`).join('') +
+      `</div></div>`;
+    if(S.vivero){
+      h += `<div class="card"><span class="lbl">Zona</span><div class="grid">` +
+        CONFIG.zonas.filter(z=>z[0]===S.vivero).map(z=>{
+          const et=etiq(z[0],z[1]), pl=plantasDe(et), hechas=pl.filter(p=>medicionDe(et,p.id,S.fecha).rec).length;
+          const cls = pl.length && hechas===pl.length ? 'btn done' : 'btn';
+          return `<button class="${cls}" data-act="zona" data-et="${esc(et)}">${esc(z[1])}<small>${pl.length ? (hechas===pl.length?'✓ ':'')+hechas+'/'+pl.length : 'sin plantas'}</small></button>`;
+        }).join('') + `</div></div>`;
+    }
+    return h;
+  }
+  const et=S.etiqueta, pl=plantasDe(et);
+  const hechas=pl.filter(p=>medicionDe(et,p.id,S.fecha).rec).length;
+  const zi=zonaInfo[cfg.campana+'|'+et]||{};
+  h += `<div class="card"><div class="zhead"><h2>${esc(et)}</h2><button class="link" data-act="cambiarZona">← Cambiar zona</button></div>
+    <div class="muted">${hechas} de ${pl.length} plantas medidas el ${fFecha(S.fecha)}</div>
+    <div class="bar"><i style="width:${pl.length?Math.round(hechas/pl.length*100):0}%"></i></div>
+    <label class="lbl mt" for="finj">Fecha de injerto de la zona (opcional)</label>
+    <input class="big" type="date" id="finj" value="${zi.fechaInjerto||''}" data-ch="finj"></div>`;
+  if(!pl.length) h += `<div class="note">Esta zona todavía no tiene plantas indicadoras. Añádelas con el botón de abajo (pon el mismo ID que usáis en el Excel).</div>`;
+  h += pl.map(p=>{
+    const {rec,n}=medicionDe(et,p.id,S.fecha);
+    let res='Pendiente';
+    if(rec){
+      res = CONFIG.campos.filter(c=>rec[c.k]!=null&&rec[c.k]!=='').map(c=>c.label.replace('Altura ','').replace('Diámetro a 70 cm','Ø70')+' '+fN(rec[c.k])).join(' · ') || 'Solo comentario';
+      if(rec.enfermedad==='Sí') res += ' · 🦠';
+    }
+    return `<button class="plant ${rec?'done':''}" data-act="planta" data-id="${esc(p.id)}">
+      <span class="ck">${rec?'✓':''}</span>
+      <span class="grow"><span class="id">${esc(p.id)}</span>${n>1?'<span class="tag">'+n+' mediciones</span>':''}${rec&&!rec.synced&&cfg.url?'<span class="tag">sin enviar</span>':''}
+      <br><span class="sm">Sector ${esc(p.sector)} · ${esc(res)}</span></span>
+      ${p.extra && !vivos().some(r=>r.etiqueta===et&&r.id===p.id) ? `<span data-act="quitarPlanta" data-id="${esc(p.id)}" style="padding:10px;font-size:20px;color:var(--muted)">✕</span>`:''}
+    </button>`;
+  }).join('');
+  h += `<button class="btn sec mt" data-act="nuevaPlanta">+ Añadir planta</button>`;
+  return h;
+}
+
+function vForm(){
+  const et=S.etiqueta, p=plantasDe(et).find(x=>x.id===S.planta) || {id:S.planta, sector:''};
+  const {rec}=medicionDe(et,p.id,S.fecha), ant=anteriorDe(et,p.id,S.fecha);
+  let h=`<div class="zhead"><button class="link" data-act="volver">← Volver</button><span class="muted">${esc(et)} · sector ${esc(p.sector)}</span></div>
+    <div class="card"><h2 style="margin:0 0 2px;font-size:26px">${esc(p.id)}</h2>
+    <div class="muted">${fFecha(S.fecha)}${rec?' · <b>editando</b>':''}${ant?' · anterior: '+fFecha(ant.fecha):' · sin medición anterior'}</div></div><div class="card">`;
+  CONFIG.campos.filter(c=>cfg.campos[c.k]!==false).forEach(c=>{
+    const v = rec && rec[c.k]!=null ? fN(rec[c.k]) : '';
+    const pv = ant && ant[c.k]!=null && ant[c.k]!=='' ? fN(ant[c.k])+' '+c.u : null;
+    h+=`<div class="field"><label class="lbl" for="f_${c.k}">${c.label} <span>(${c.u})</span></label>
+      <input class="num" id="f_${c.k}" data-k="${c.k}" inputmode="decimal" autocomplete="off" enterkeyhint="next" value="${v}" placeholder="—">
+      <div class="prev" id="p_${c.k}">${pv?'Anterior: <b>'+pv+'</b>':''}</div></div>`;
+  });
+  const enf = rec ? rec.enfermedad : 'No';
+  h+=`<div class="field"><span class="lbl">Enfermedad</span><div class="tog">
+      <button class="btn ${enf!=='Sí'?'sel':''}" data-act="enf" data-v="No">No</button>
+      <button class="btn si ${enf==='Sí'?'sel':''}" data-act="enf" data-v="Sí">Sí</button></div></div>
+    <div class="field"><label class="lbl" for="f_com">Comentarios</label><textarea id="f_com">${esc(rec?rec.comentarios:'')}</textarea></div></div>
+    <button class="btn pri" data-act="guardar" data-next="1">Guardar y siguiente →</button>
+    <button class="btn sec mt" data-act="guardar">Guardar y volver a la zona</button>
+    ${rec?'<button class="btn dan mt" data-act="borrar">Borrar esta medición</button>':''}`;
+  S._enf = enf; S._ant = ant;
+  return h;
+}
+function prepararForm(){
+  const inputs=[...document.querySelectorAll('input.num')];
+  inputs.forEach((el,i)=>{
+    el.addEventListener('input',()=>pistaCampo(el));
+    el.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); (inputs[i+1]||document.getElementById('f_com')).focus(); }});
+  });
+  const first=inputs.find(i=>!i.value); if(first && !('ontouchstart' in window)) first.focus();
+}
+function pistaCampo(el){
+  const c=CONFIG.campos.find(c=>c.k===el.dataset.k), ant=S._ant, box=document.getElementById('p_'+c.k);
+  const v=num(el.value), pv=ant?num(ant[c.k]):NaN;
+  let t = !isNaN(pv) ? 'Anterior: <b>'+fN(pv)+' '+c.u+'</b>' : '';
+  if(el.value.trim()!=='' && isNaN(v)) t += ' <span class="warn">· no es un número</span>';
+  else if(!isNaN(v) && !isNaN(pv) && el.value.trim()!==''){
+    const dif=v-pv, raro = revisar({[c.k]:v}, ant, S.fecha).length>0;
+    t += ` → <span class="${raro?'warn':''}">${dif>=0?'+':''}${fN(dif)} ${c.u}${raro?' ⚠':''}</span>`;
+  } else if(!isNaN(v) && v>c.max) t += ' <span class="warn">⚠ valor alto</span>';
+  box.innerHTML=t;
+}
+
+function vDatos(){
+  const vs=vivos().filter(r=>!r.historico);
+  const pend=records.filter(r=>!r.synced && !r.historico).length;
+  let h='';
+  if(!cfg.url) h+=`<div class="note">Las mediciones se guardan <b>solo en este móvil</b>. Descarga el Excel desde aquí, o conecta Google Sheets en <b>Ajustes</b> para que se envíen solas.</div>`;
+  else h+=`<div class="card"><div class="row"><div class="grow"><b>${pend ? pend+' mediciones sin enviar' : '✓ Todo enviado a Google Sheets'}</b>
+      <div class="muted">${sync.ultima?'Última sincronización: '+new Date(sync.ultima).toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'}):'Todavía no se ha sincronizado'}</div>
+      ${sync.error?'<div class="muted" style="color:var(--red)">'+esc(sync.error)+'</div>':''}</div></div>
+      <button class="btn pri mt" data-act="sync" ${sync.estado==='run'?'disabled':''}>${sync.estado==='run'?'Sincronizando…':'⇅ Sincronizar ahora'}</button></div>`;
+  const lunes = sumaDias(hoy(), -((new Date(dUTC(hoy())).getUTCDay()+6)%7));
+  const desde = S.exDesde || sumaDias(lunes,-7), hasta = S.exHasta || hoy();
+  h+=`<div class="card"><h3 class="sec">Descargar para el Excel</h3>
+    <div class="row"><div class="grow"><label class="lbl" for="exDesde">Desde</label><input class="big" type="date" id="exDesde" value="${desde}" data-ch="ex"></div>
+    <div class="grow"><label class="lbl" for="exHasta">Hasta</label><input class="big" type="date" id="exHasta" value="${hasta}" data-ch="ex"></div></div>
+    <label class="lbl mt" for="exViv">Vivero</label><select class="big" id="exViv" data-ch="ex"><option value="">Todos</option>
+    ${CONFIG.viveros.map(v=>`<option value="${v.id}" ${S.exViv===v.id?'selected':''}>${esc(v.nombre)}</option>`).join('')}</select>
+    <button class="btn pri mt" data-act="excel" id="btnExcel">Descargar Excel</button>
+    <p class="muted">El archivo tiene las mismas 21 columnas que la hoja <b>DATOS</b>, con las fórmulas. Copia las filas y pégalas en DATOS a partir de la primera fila sin «Fecha medición».</p></div>`;
+  const g={};
+  vs.forEach(r=>{ const k=r.fecha+'|'+r.etiqueta; (g[k]=g[k]||{fecha:r.fecha,et:r.etiqueta,n:0,p:0,ids:new Set()}); g[k].n++; g[k].ids.add(r.id); if(!r.synced) g[k].p++; });
+  const grupos=Object.values(g).sort((a,b)=>b.fecha.localeCompare(a.fecha)||a.et.localeCompare(b.et));
+  h+=`<div class="card"><h3 class="sec">Mediciones (${vs.length})</h3>`;
+  if(!grupos.length) h+=`<p class="muted">Todavía no hay mediciones en esta campaña.</p>`;
+  h+=`<div class="list">`+grupos.slice(0,80).map(x=>`<button class="it" data-act="abrirGrupo" data-f="${x.fecha}" data-et="${esc(x.et)}">
+      <span><b>${fFecha(x.fecha)}</b> · ${esc(x.et)}<br><span class="muted">${x.ids.size} plantas${x.n>x.ids.size?' · '+(x.n-x.ids.size)+' repetidas':''}</span></span>
+      <span>${cfg.url ? (x.p?'<span class="tag">'+x.p+' sin enviar</span>':'<span class="tag ok">enviado</span>') : ''} ›</span></button>`).join('')+`</div></div>`;
+  return h;
+}
+
+function vAjustes(){
+  const c=cfg;
+  let h=avisoInstalar(true);
+  h+=`<div class="card"><h3 class="sec">General</h3>
+    <label class="lbl" for="aNombre">Tu nombre (queda apuntado en cada medición)</label><input class="big" id="aNombre" value="${esc(c.nombre)}" data-ch="cfg" data-k="nombre">
+    <div class="row mt"><div class="grow"><label class="lbl" for="aCamp">Campaña</label><input class="big" id="aCamp" value="${esc(c.campana)}" data-ch="cfg" data-k="campana"></div>
+    <div class="grow"><label class="lbl" for="aIni">Inicio campaña</label><input class="big" type="date" id="aIni" value="${esc(c.inicio)}" data-ch="cfg" data-k="inicio"></div></div>
+    <p class="muted">«Inicio campaña» es la fecha que usa la fórmula «Semana campaña» del Excel (ahora 9/11/2026).</p></div>
+  <div class="card"><h3 class="sec">Qué se mide</h3>` +
+    CONFIG.campos.map(f=>`<label class="chk"><input type="checkbox" data-ch="campo" data-k="${f.k}" ${c.campos[f.k]!==false?'checked':''}>${f.label} (${f.u})</label>`).join('') +
+  `<p class="muted">Desmarca lo que no midáis estas semanas para que el formulario sea más corto.</p></div>
+  <div class="card"><h3 class="sec">Google Sheets (envío automático)</h3>
+    <label class="lbl" for="aUrl">Dirección del script</label><input class="big" id="aUrl" value="${esc(c.url)}" placeholder="https://script.google.com/macros/s/…/exec" data-ch="cfg" data-k="url" autocomplete="off">
+    <label class="lbl mt" for="aClave">Clave</label><input class="big" id="aClave" value="${esc(c.clave)}" data-ch="cfg" data-k="clave" autocomplete="off">
+    <button class="btn sec mt" data-act="probar">Probar conexión</button>
+    <button class="btn sec mt" data-act="enlace" ${c.url?'':'disabled'}>Copiar enlace para los compañeros</button>
+    <p class="muted">El enlace abre la app con Google Sheets ya configurado. Pásalo por WhatsApp o correo.</p></div>
+  <div class="card"><h3 class="sec">Copia de seguridad</h3>
+    <button class="btn sec" data-act="backup">Descargar copia (archivo .json)</button>
+    <label class="btn sec mt" style="cursor:pointer">Cargar copia<input type="file" accept=".json,application/json" id="aRestore" data-ch="restore" style="display:none"></label>
+    <p class="muted">Sirve para pasar las mediciones de un móvil a otro sin internet.
+    ${Store.mode==='ls'?'<br>⚠ Este navegador usa almacenamiento reducido.':''}<span id="persist"></span></p></div>
+  <p class="muted" style="text-align:center">Dispositivo ${dispositivo} · v1</p>`;
+  setTimeout(async()=>{ try{ if(navigator.storage&&navigator.storage.persisted){ const p=await navigator.storage.persisted(); const el=document.getElementById('persist'); if(el) el.innerHTML='<br>'+(p?'✓ El navegador no borrará estos datos.':'Los datos se guardan en el navegador: no borres los datos del navegador ni desinstales la app con mediciones sin enviar.'); } }catch(e){} },0);
+  return h;
+}
+
+/* ---------- instalar como app ---------- */
+let installEvt=null;
+window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); installEvt=e; if(S.view!=='form') render(); });
+function avisoInstalar(siempre){
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if(standalone || (!siempre && LS.get('ocultarInstalar',false))) return '';
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(installEvt) return `<div class="note g"><b>Instala la app</b> para usarla sin internet.<button class="btn sec mt" data-act="instalar">Instalar en este móvil</button>${siempre?'':'<button class="link" data-act="ocultarInst">Ahora no</button>'}</div>`;
+  if(ios) return `<div class="note g"><b>Para usarla sin internet:</b> pulsa <b>Compartir</b> (□↑) y luego <b>«Añadir a pantalla de inicio»</b>. Abre siempre la app desde ese icono.${siempre?'':'<br><button class="link" data-act="ocultarInst">Entendido</button>'}</div>`;
+  return '';
+}
+
+/* ---------- acciones ---------- */
+document.addEventListener('click', async e=>{
+  const nav=e.target.closest('[data-nav]');
+  if(nav){ S.view=nav.dataset.nav; if(S.view==='medir'&&S.planta) S.planta=null; render(); scrollTo(0,0); return; }
+  if(e.target.id==='modal'){ cerrarModal(); return; }
+  const b=e.target.closest('[data-act]'); if(!b) return;
+  const a=b.dataset.act;
+  if(a==='vivero'){ S.vivero=b.dataset.v; render(); }
+  else if(a==='zona'){ S.etiqueta=b.dataset.et; render(); scrollTo(0,0); }
+  else if(a==='cambiarZona'){ S.etiqueta=null; render(); }
+  else if(a==='quitarPlanta'){ e.stopPropagation(); const id=b.dataset.id; extras[S.etiqueta]=(extras[S.etiqueta]||[]).filter(p=>p[0]!==id); LS.set('plantasExtra',extras); render(); }
+  else if(a==='planta'){ S.planta=b.dataset.id; S.view='form'; render(); scrollTo(0,0); }
+  else if(a==='volver'){ S.view='medir'; S.planta=null; render(); }
+  else if(a==='enf'){ S._enf=b.dataset.v; document.querySelectorAll('[data-act=enf]').forEach(x=>x.classList.toggle('sel',x===b)); }
+  else if(a==='guardar'){ guardar(!!b.dataset.next, false); }
+  else if(a==='forzar'){ cerrarModal(); guardar(S._next, true); }
+  else if(a==='cerrar'){ cerrarModal(); }
+  else if(a==='borrar'){ modal(`<h3>¿Borrar esta medición?</h3><p>${esc(S.planta)} · ${fFecha(S.fecha)}</p><button class="btn dan" data-act="borrarOk">Sí, borrar</button><button class="btn sec mt" data-act="cerrar">Cancelar</button>`); }
+  else if(a==='borrarOk'){ const {rec}=medicionDe(S.etiqueta,S.planta,S.fecha); if(rec){ rec.borrado=1; rec.synced=false; rec.actualizado=new Date().toISOString(); await Store.put([rec]); } cerrarModal(); S.view='medir'; S.planta=null; render(); toast('Medición borrada'); programarSync(); }
+  else if(a==='nuevaPlanta'){ nuevaPlanta(); }
+  else if(a==='crearPlanta'){ crearPlanta(); }
+  else if(a==='abrirGrupo'){ S.fecha=b.dataset.f; S.etiqueta=b.dataset.et; S.vivero=S.etiqueta.split(' · ')[0]; S.view='medir'; render(); scrollTo(0,0); }
+  else if(a==='sync'){ await sincronizar(true); }
+  else if(a==='excel'){ descargarExcel(); }
+  else if(a==='probar'){ await sincronizar(true, true); }
+  else if(a==='enlace'){ copiarEnlace(); }
+  else if(a==='backup'){ descargarBackup(); }
+  else if(a==='instalar'){ if(installEvt){ installEvt.prompt(); installEvt=null; render(); } }
+  else if(a==='ocultarInst'){ LS.set('ocultarInstalar',true); render(); }
+});
+document.addEventListener('change', e=>{
+  const t=e.target, ch=t.dataset.ch; if(!ch) return;
+  if(ch==='fecha'){ if(t.value){ S.fecha=t.value; render(); } }
+  else if(ch==='finj'){ const k=cfg.campana+'|'+S.etiqueta; zonaInfo[k]=Object.assign(zonaInfo[k]||{}, {fechaInjerto:t.value}); LS.set('zonaInfo',zonaInfo); toast('Fecha de injerto guardada'); }
+  else if(ch==='ex'){ S.exDesde=document.getElementById('exDesde').value; S.exHasta=document.getElementById('exHasta').value; S.exViv=document.getElementById('exViv').value; contarExport(); }
+  else if(ch==='cfg'){ cfg[t.dataset.k]=t.value.trim(); saveCfg(); pintarEstado(); if(t.dataset.k==='url'||t.dataset.k==='clave') render(); }
+  else if(ch==='campo'){ cfg.campos[t.dataset.k]=t.checked; saveCfg(); }
+  else if(ch==='restore'){ cargarBackup(t.files[0]); }
+});
+
+async function guardar(siguiente, forzar){
+  const vals={}, errores=[];
+  CONFIG.campos.forEach(c=>{
+    const el=document.getElementById('f_'+c.k); if(!el){ vals[c.k]=undefined; return; }
+    const raw=el.value.trim();
+    if(raw===''){ vals[c.k]=null; return; }
+    const n=num(raw);
+    if(isNaN(n)) errores.push(`<b>${c.label}</b>: «${esc(raw)}» no es un número.`);
+    else if(n<0) errores.push(`<b>${c.label}</b> no puede ser negativa.`);
+    else if(n>1000) errores.push(`<b>${c.label}</b>: ${fN(n)} es imposible.`);
+    else vals[c.k]=n;
+  });
+  const com=document.getElementById('f_com').value.trim(), enf=S._enf||'No';
+  const hayAlgo = CONFIG.campos.some(c=>vals[c.k]!=null) || enf==='Sí' || com;
+  if(!errores.length && !hayAlgo) errores.push('No has apuntado ninguna medida.');
+  if(errores.length){ modal(`<h3>Revisa estos datos</h3><ul>${errores.map(x=>'<li>'+x+'</li>').join('')}</ul><button class="btn pri" data-act="cerrar">Corregir</button>`); return; }
+  if(!forzar){
+    const av=revisar(vals, S._ant, S.fecha);
+    if(av.length){ S._next=siguiente; modal(`<h3>⚠ ¿Seguro?</h3><ul>${av.map(x=>'<li>'+x+'</li>').join('')}</ul>
+      <button class="btn pri" data-act="cerrar">Corregir</button><button class="btn sec mt" data-act="forzar">Está bien, guardar igualmente</button>`); return; }
+  }
+  const et=S.etiqueta, [viv,zona]=et.split(' · '), p=plantasDe(et).find(x=>x.id===S.planta)||{sector:''};
+  let {rec}=medicionDe(et,S.planta,S.fecha);
+  if(!rec){ rec={uuid:uuid(), id:S.planta, vivero:viv, zona, etiqueta:et, campana:cfg.campana, fecha:S.fecha, dispositivo}; records.push(rec); }
+  CONFIG.campos.forEach(c=>{ if(vals[c.k]!==undefined) rec[c.k]=vals[c.k]; });
+  Object.assign(rec, { sector:p.sector, anio:Number(S.fecha.slice(0,4)), fecha_injerto:(zonaInfo[cfg.campana+'|'+et]||{}).fechaInjerto||'',
+    enfermedad:enf, comentarios:com, medidor:cfg.nombre, actualizado:new Date().toISOString(), borrado:0, synced:false });
+  try{ await Store.put([rec]); }catch(err){ modal(`<h3>No se ha podido guardar</h3><p>${esc(err)}</p><button class="btn pri" data-act="cerrar">Vale</button>`); return; }
+  try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+  toast('✓ Guardado en el móvil');
+  programarSync();
+  if(siguiente){
+    const pl=plantasDe(et), i=pl.findIndex(x=>x.id===S.planta);
+    const sig=[...pl.slice(i+1),...pl.slice(0,i)].find(x=>!medicionDe(et,x.id,S.fecha).rec);
+    if(sig){ S.planta=sig.id; render(); scrollTo(0,0); return; }
+    toast('✓ Zona completa');
+  }
+  S.view='medir'; S.planta=null; render(); scrollTo(0,0);
+}
+
+function nuevaPlanta(){
+  const sec=sectoresDe(S.etiqueta);
+  modal(`<h3>Añadir planta a ${esc(S.etiqueta)}</h3>
+    <label class="lbl" for="npId">ID de la planta (igual que en el Excel)</label><input class="big" id="npId" autocomplete="off" placeholder="p. ej. A2CF5S2 1.1">
+    <label class="lbl mt" for="npSec">Sector de riego</label>
+    ${sec.length?`<select class="big" id="npSec">${sec.map(s=>`<option>${s}</option>`).join('')}</select>`:`<input class="big" id="npSec" inputmode="numeric">`}
+    <button class="btn pri mt" data-act="crearPlanta">Añadir</button><button class="btn sec mt" data-act="cerrar">Cancelar</button>`);
+  setTimeout(()=>document.getElementById('npId').focus(),50);
+}
+function crearPlanta(){
+  const id=document.getElementById('npId').value.trim().replace(/\s+/g,' '), sec=document.getElementById('npSec').value.trim();
+  if(!id){ toast('Escribe el ID'); return; }
+  if(plantasDe(S.etiqueta).some(p=>p.id===id)){ toast('Esa planta ya está'); return; }
+  (extras[S.etiqueta]=extras[S.etiqueta]||[]).push([id, Number(sec)||sec]); LS.set('plantasExtra',extras);
+  cerrarModal(); render(); toast('Planta añadida');
+}
+
+/* ---------- estado y sincronización con Google Sheets ---------- */
+function pintarEstado(){
+  const el=document.getElementById('estado'), tx=document.getElementById('estadoTxt');
+  const pend=records.filter(r=>!r.synced&&!r.historico).length, total=vivos().filter(r=>!r.historico).length;
+  const on=navigator.onLine;
+  el.className=''; let t;
+  if(!cfg.url){ t=`${total} ${total===1?'medición guardada':'mediciones guardadas'} en este móvil`; if(!on) el.className='off'; }
+  else if(sync.estado==='run') t='Sincronizando…';
+  else if(!on){ el.className='off'; t=pend?`Sin conexión · ${pend} ${pend===1?'guardada, se enviará sola':'guardadas, se enviarán solas'}`:'Sin conexión · todo enviado'; }
+  else if(sync.error && pend){ el.className='err'; t=`${pend} sin enviar · se reintentará`; }
+  else t = pend ? `${pend} pendientes de enviar` : '✓ Todo enviado a Google Sheets';
+  tx.textContent=t;
+  document.getElementById('navBadge').innerHTML = cfg.url&&pend ? `<span class="badge">${pend}</span>` : '';
+}
+function conTiempo(url, opt, ms){
+  const ac=new AbortController(); const t=setTimeout(()=>ac.abort(), ms);
+  return fetch(url, Object.assign({signal:ac.signal, redirect:'follow'}, opt)).finally(()=>clearTimeout(t));
+}
+let syncTimer=null;
+function programarSync(){ clearTimeout(syncTimer); syncTimer=setTimeout(()=>sincronizar(false), 1500); pintarEstado(); }
+const CAMPOS_SHEET=['uuid','id','vivero','zona','campana','etiqueta','sector','anio','fecha_injerto','fecha','altura_ucb','altura_lign','diametro70','altura_injerto','enfermedad','comentarios','medidor','dispositivo','actualizado','borrado'];
+async function sincronizar(manual, prueba){
+  if(!cfg.url){ if(manual) toast('Configura Google Sheets en Ajustes'); return; }
+  if(sync.estado==='run') return;
+  if(!navigator.onLine && !manual){ pintarEstado(); return; }
+  sync.estado='run'; sync.error=''; if(S.view==='datos') render(); else pintarEstado();
+  let hubo=0;
+  try{
+    // 1) enviar lo pendiente
+    const pend=records.filter(r=>!r.synced && !r.historico);
+    let enviados=0;
+    for(let i=0;i<pend.length;i+=200){
+      const lote=pend.slice(i,i+200);
+      const snap=new Map(lote.map(r=>[r.uuid,r.actualizado]));
+      const res=await conTiempo(cfg.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({clave:cfg.clave, records:lote.map(r=>{ const o={}; CAMPOS_SHEET.forEach(k=>o[k]=r[k]??''); return o; })})},30000);
+      const j=await res.json();
+      if(!j.ok) throw new Error(j.error||'Error del servidor');
+      const ok=new Set(j.guardados||[]);
+      const cambiados=lote.filter(r=>ok.has(r.uuid) && snap.get(r.uuid)===r.actualizado);
+      cambiados.forEach(r=>r.synced=true); enviados+=cambiados.length;
+      await Store.put(cambiados);
+    }
+    // 2) recibir lo de los compañeros (como mucho cada 5 min, salvo si se pide)
+    let recibidos=0;
+    if(manual || Date.now()-sync.ultimaBajada>5*60000){
+      const u=cfg.url+(cfg.url.includes('?')?'&':'?')+'clave='+encodeURIComponent(cfg.clave)+'&campana='+encodeURIComponent(cfg.campana);
+      const j=await (await conTiempo(u,{},30000)).json();
+      if(!j.ok) throw new Error(j.error||'Error del servidor');
+      recibidos=await fusionar(j.records||[]); hubo=recibidos;
+      sync.ultimaBajada=Date.now();
+    }
+    sync.ultima=Date.now(); LS.set('ultimaSync',sync.ultima);
+    if(prueba) modal(`<h3>✓ Conexión correcta</h3><p>Google Sheets responde. ${enviados} enviadas, ${recibidos} recibidas.</p><button class="btn pri" data-act="cerrar">Vale</button>`);
+    else if(manual) toast(`✓ ${enviados} enviadas · ${recibidos} recibidas`);
+  }catch(err){
+    sync.error = err.name==='AbortError' ? 'La conexión tarda demasiado' : (/fetch|network|load/i.test(String(err)) ? 'Sin conexión con Google Sheets' : String(err.message||err));
+    if(prueba) modal(`<h3>No conecta</h3><p>${esc(sync.error)}</p><p class="muted">Revisa la dirección del script, la clave y que el script esté implantado con acceso «Cualquier usuario».</p><button class="btn pri" data-act="cerrar">Vale</button>`);
+    else if(manual) toast('No se ha podido sincronizar: '+sync.error);
+  }finally{
+    sync.estado='idle';
+    if(S.view==='datos' || (S.view==='medir' && hubo)) render(); else pintarEstado();
+  }
+}
+async function fusionar(lista){
+  const idx=new Map(records.map(r=>[r.uuid,r])), cambiar=[];
+  lista.forEach(o=>{
+    if(!o.uuid) return;
+    const r={}; CAMPOS_SHEET.forEach(k=>r[k]=o[k]);
+    r.id=String(r.id).trim(); r.zona=String(r.zona); r.campana=String(r.campana); r.fecha=String(r.fecha).slice(0,10);
+    r.fecha_injerto=r.fecha_injerto?String(r.fecha_injerto).slice(0,10):'';
+    CONFIG.campos.forEach(c=>{ r[c.k] = (r[c.k]===''||r[c.k]==null) ? null : num(r[c.k]); });
+    r.borrado = Number(r.borrado)?1:0; r.synced=true; r.actualizado=String(r.actualizado||'');
+    const l=idx.get(r.uuid);
+    if(!l){ records.push(r); idx.set(r.uuid,r); cambiar.push(r); }
+    else if(l.synced && r.actualizado>(l.actualizado||'')){ Object.assign(l,r); cambiar.push(l); }
+  });
+  if(cambiar.length) await Store.put(cambiar);
+  return cambiar.length;
+}
+window.addEventListener('online', ()=>sincronizar(false));
+window.addEventListener('offline', pintarEstado);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') sincronizar(false); });
+setInterval(()=>{ if(records.some(r=>!r.synced&&!r.historico)) sincronizar(false); }, 60000);
+
+function copiarEnlace(){
+  const datos=btoa(unescape(encodeURIComponent(JSON.stringify({url:cfg.url,clave:cfg.clave,campana:cfg.campana,inicio:cfg.inicio}))));
+  const link=location.origin+location.pathname+'#cfg='+datos;
+  const ok=()=>toast('Enlace copiado');
+  (navigator.clipboard ? navigator.clipboard.writeText(link).then(ok) : Promise.reject()).catch(()=>{
+    modal(`<h3>Enlace para los compañeros</h3><textarea readonly style="min-height:120px">${esc(link)}</textarea><button class="btn pri mt" data-act="cerrar">Vale</button>`);
+  });
+}
+function leerEnlace(){
+  const m=location.hash.match(/cfg=([^&]+)/); if(!m) return;
+  try{ const o=JSON.parse(decodeURIComponent(escape(atob(m[1])))); ['url','clave','campana','inicio'].forEach(k=>{ if(o[k]) cfg[k]=o[k]; }); saveCfg(); setTimeout(()=>toast('✓ Google Sheets configurado'),300); }catch(e){}
+  history.replaceState(null,'',location.pathname+location.search);
+}
+
+/* ---------- copia de seguridad ---------- */
+function bajar(blob, nombre){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nombre; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+}
+function descargarBackup(){
+  const o={app:'mediciones-vivero', v:1, fecha:new Date().toISOString(), dispositivo, records:records.filter(r=>!r.historico), extras, zonaInfo};
+  bajar(new Blob([JSON.stringify(o)],{type:'application/json'}), `copia_mediciones_${hoy()}_${dispositivo}.json`);
+}
+async function cargarBackup(f){
+  if(!f) return;
+  try{
+    const o=JSON.parse(await f.text()); if(o.app!=='mediciones-vivero') throw new Error('No es una copia de esta app');
+    const idx=new Map(records.map(r=>[r.uuid,r])), cambiar=[];
+    (o.records||[]).forEach(r=>{ const l=idx.get(r.uuid); if(!l){ r.synced=false; records.push(r); cambiar.push(r); } else if((r.actualizado||'')>(l.actualizado||'')){ Object.assign(l,r,{synced:false}); cambiar.push(l); } });
+    Object.entries(o.extras||{}).forEach(([et,l])=>{ extras[et]=extras[et]||[]; l.forEach(p=>{ if(!extras[et].some(x=>x[0]===p[0])) extras[et].push(p); }); });
+    LS.set('plantasExtra',extras);
+    await Store.put(cambiar); toast(`✓ ${cambiar.length} mediciones cargadas`); programarSync(); render();
+  }catch(e){ toast('No se ha podido cargar: '+(e.message||e)); }
+}
+
+/* ---------- exportar a Excel (.xlsx, sin librerías) ---------- */
+const CAB=['ID indicador','clave','Vivero','Zona','Campaña','Zona (etiqueta)','sector riego','Año','Semana campaña','Lunes de la semana','Sem planta','fecha injerto','Fecha medición','Altura UCB (cm)','Δ altura UCB (cm/sem)','altura lignificación (cm)','Diámetro a 70 cm (mm)','Altura injerto (cm)','Δ altura injerto (cm/sem)','Enfermedad','Comentarios'];
+function filasExport(){
+  const d=document.getElementById('exDesde').value, h=document.getElementById('exHasta').value, v=document.getElementById('exViv').value;
+  const ult=new Map();
+  vivos().filter(r=>!r.historico && (!d||r.fecha>=d) && (!h||r.fecha<=h) && (!v||r.vivero===v)).forEach(r=>{
+    const k=r.etiqueta+'|'+r.id+'|'+r.fecha, l=ult.get(k); if(!l || (r.actualizado||'')>(l.actualizado||'')) ult.set(k,r);
+  });
+  const orden=new Map(CONFIG.zonas.map((z,i)=>[etiq(z[0],z[1]),i]));
+  return [...ult.values()].sort((a,b)=>a.fecha.localeCompare(b.fecha) || (orden.get(a.etiqueta)??99)-(orden.get(b.etiqueta)??99) || a.id.localeCompare(b.id));
+}
+function contarExport(){ const b=document.getElementById('btnExcel'); if(!b) return; const n=filasExport().length; b.textContent=n?`Descargar Excel (${n} filas)`:'No hay mediciones en esas fechas'; b.disabled=!n; }
+function serial(s){ return (dUTC(s)-Date.UTC(1899,11,30))/86400000; }
+function formulas(r, ini){
+  const [y,m,d]=ini.split('-').map(Number), D=`DATE(${y},${m},${d})`;
+  return {
+    B:`IF(OR(A${r}="",I${r}=""),"",A${r}&"|"&I${r})`,
+    I:`IF(ISNUMBER(M${r}),"S"&(INT((M${r}-${D})/7)+2),"")`,
+    J:`IF(ISNUMBER(M${r}),INT(M${r})-WEEKDAY(M${r},2)+1,"")`,
+    K:`IF(ISNUMBER(M${r}),INT((M${r}-${D})/7)+2,"")`,
+    O:`IF(OR(A${r}="",NOT(ISNUMBER(M${r})),NOT(ISNUMBER(N${r}))),"",IF(COUNTIFS(A:A,A${r},C:C,C${r}&"",D:D,D${r},E:E,E${r},J:J,J${r}-7,N:N,"<>")=1,N${r}-SUMIFS(N:N,A:A,A${r},C:C,C${r}&"",D:D,D${r},E:E,E${r},J:J,J${r}-7),""))`,
+    S:`IF(OR(A${r}="",I${r}="",R${r}=""),"",IFERROR(R${r}-INDEX(R:R,MATCH(A${r}&"|S"&(VALUE(SUBSTITUTE(I${r},"S",""))-1),B:B,0)),""))`,
+  };
+}
+function xmlEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function hojaXML(filas){
+  const L='ABCDEFGHIJKLMNOPQRSTU'.split('');
+  const celda=(col,r,c)=>{
+    const ref=col+r;
+    if(c==null||c==='') return '';
+    if(c.f) return `<c r="${ref}"${c.s?' s="'+c.s+'"':''}><f>${xmlEsc(c.f)}</f></c>`;
+    if(c.d) return `<c r="${ref}" s="1"><v>${serial(c.d)}</v></c>`;
+    if(typeof c==='number') return `<c r="${ref}"><v>${c}</v></c>`;
+    return `<c r="${ref}" t="inlineStr"${c.h?' s="2"':''}><is><t xml:space="preserve">${xmlEsc(c.t??c)}</t></is></c>`;
+  };
+  let x=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="1" width="16" customWidth="1"/><col min="2" max="2" width="18" customWidth="1"/><col min="3" max="12" width="11" customWidth="1"/><col min="13" max="20" width="13" customWidth="1"/><col min="21" max="21" width="30" customWidth="1"/></cols><sheetData>`;
+  x+=`<row r="1">`+CAB.map((h,i)=>celda(L[i],1,{t:h,h:1})).join('')+`</row>`;
+  filas.forEach((rec,i)=>{
+    const r=i+2, F=formulas(r,cfg.inicio), n=v=>(v==null||v===''||isNaN(num(v)))?null:num(v);
+    const sec=n(rec.sector);
+    const vals=[rec.id,{f:F.B},rec.vivero,rec.zona,rec.campana,rec.etiqueta,sec!=null?sec:(rec.sector||null),Number(rec.fecha.slice(0,4)),
+      {f:F.I},{f:F.J,s:1},{f:F.K},rec.fecha_injerto?{d:rec.fecha_injerto}:null,{d:rec.fecha},
+      n(rec.altura_ucb),{f:F.O},n(rec.altura_lign),n(rec.diametro70),n(rec.altura_injerto),{f:F.S},rec.enfermedad||'No',rec.comentarios||null];
+    x+=`<row r="${r}">`+vals.map((v,j)=>celda(L[j],r,v)).join('')+`</row>`;
+  });
+  return x+`</sheetData></worksheet>`;
+}
+function crc32(u8){
+  let t=crc32.t; if(!t){ t=crc32.t=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1?0xEDB88320^(c>>>1):c>>>1; t[n]=c>>>0; } }
+  let c=0xFFFFFFFF; for(let i=0;i<u8.length;i++) c=t[(c^u8[i])&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0;
+}
+function zip(files){
+  const enc=new TextEncoder(), partes=[], central=[]; let off=0;
+  const now=new Date(), dt=((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate(), tm=(now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>1);
+  files.forEach(f=>{
+    const nm=enc.encode(f.name), data=enc.encode(f.data), crc=crc32(data);
+    const lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint16(8,0,true);
+    lh.setUint16(10,tm,true); lh.setUint16(12,dt,true); lh.setUint32(14,crc,true); lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true);
+    lh.setUint16(26,nm.length,true); lh.setUint16(28,0,true);
+    partes.push(new Uint8Array(lh.buffer),nm,data);
+    const ch=new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint16(10,0,true);
+    ch.setUint16(12,tm,true); ch.setUint16(14,dt,true); ch.setUint32(16,crc,true); ch.setUint32(20,data.length,true); ch.setUint32(24,data.length,true);
+    ch.setUint16(28,nm.length,true); ch.setUint32(42,off,true);
+    central.push(new Uint8Array(ch.buffer),nm);
+    off+=30+nm.length+data.length;
+  });
+  const tam=central.reduce((a,b)=>a+b.length,0), fin=new DataView(new ArrayBuffer(22));
+  fin.setUint32(0,0x06054b50,true); fin.setUint16(8,files.length,true); fin.setUint16(10,files.length,true); fin.setUint32(12,tam,true); fin.setUint32(16,off,true);
+  return new Blob([...partes,...central,new Uint8Array(fin.buffer)],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+function crearXlsx(filas){
+  const NS='http://schemas.openxmlformats.org/';
+  return zip([
+    {name:'[Content_Types].xml', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="${NS}package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`},
+    {name:'_rels/.rels', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${NS}package/2006/relationships"><Relationship Id="rId1" Type="${NS}officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
+    {name:'xl/workbook.xml', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="${NS}spreadsheetml/2006/main" xmlns:r="${NS}officeDocument/2006/relationships"><sheets><sheet name="Mediciones" sheetId="1" r:id="rId1"/></sheets><calcPr calcId="0" fullCalcOnLoad="1"/></workbook>`},
+    {name:'xl/_rels/workbook.xml.rels', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${NS}package/2006/relationships"><Relationship Id="rId1" Type="${NS}officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${NS}officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`},
+    {name:'xl/styles.xml', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="${NS}spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="14" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs></styleSheet>`},
+    {name:'xl/worksheets/sheet1.xml', data:hojaXML(filas)},
+  ]);
+}
+function descargarExcel(){
+  const f=filasExport(); if(!f.length) return;
+  const d=document.getElementById('exDesde').value, h=document.getElementById('exHasta').value, v=document.getElementById('exViv').value;
+  bajar(crearXlsx(f), `mediciones_${v?v+'_':''}${d||'inicio'}_a_${h||hoy()}.xlsx`);
+  toast(`✓ Excel con ${f.length} filas`);
+}
+
+/* ---------- arranque ---------- */
+(async function(){
+  leerEnlace();
+  await Store.open();
+  try{ records = await Store.all(); }catch(e){ records = []; }
+  cargarHistorico();
+  render();
+  if('serviceWorker' in navigator && /^https?:/.test(location.protocol)){
+    try{ await navigator.serviceWorker.register('sw.js'); }catch(e){}
+  }
+  sincronizar(false);
+})();
+</script>
+</body>
+</html>
