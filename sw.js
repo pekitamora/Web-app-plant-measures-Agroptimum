@@ -1,7 +1,7 @@
 // Guarda la app en el móvil para que abra sin internet.
 // Si cambias index.html, sube también este archivo cambiando el número de versión.
-const CACHE = 'mediciones-vivero-v1';
-const ARCHIVOS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const CACHE = 'mediciones-vivero-v3';
+const ARCHIVOS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './logo.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS)));

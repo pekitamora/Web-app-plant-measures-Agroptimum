@@ -3,107 +3,120 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#2f5d3a">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mediciones">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
-<title>Mediciones vivero</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Mediciones de plantas</title>
 <style>
 :root{
-  --bg:#f3f0e8; --card:#fff; --ink:#1c271f; --muted:#5d6b61; --line:#d9d3c4;
-  --green:#2f5d3a; --green2:#3f7a4d; --greenbg:#e3eee4;
-  --amber:#a86a12; --amberbg:#fbefd9; --red:#a8261d; --redbg:#fbe3e0;
-  --r:14px;
+  --brand:#299241; --brand-d:#1f7a36; --brand-dd:#14532d; --brand-50:#edf7ef; --brand-100:#d5ecd9;
+  --bg:#f3f5f4; --card:#fff; --ink:#17221b; --muted:#5e6a63; --line:#dde3df; --line2:#c9d1cc;
+  --amber:#a15c00; --amberbg:#fff4e0; --red:#b42318; --redbg:#fdecea;
+  --r:10px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
-header{position:sticky;top:0;z-index:5;background:var(--green);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) 16px 10px}
-header h1{margin:0;font-size:19px;font-weight:700;letter-spacing:.2px}
-#estado{margin-top:4px;font-size:14px;opacity:.95;display:flex;align-items:center;gap:8px}
-#estado .dot{width:10px;height:10px;border-radius:50%;background:#9be29f;flex:none}
-#estado.off .dot{background:#ffb84d} #estado.err .dot{background:#ff7b6b}
-main{padding:14px 14px 110px;max-width:720px;margin:0 auto}
+header{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.hbar{display:flex;align-items:center;gap:12px;padding:10px 16px;max-width:760px;margin:0 auto}
+.hbar img{width:40px;height:40px;border-radius:9px;border:1px solid var(--line);flex:none}
+.hbar h1{margin:0;font-size:18px;font-weight:700;letter-spacing:-.1px;color:var(--brand-dd);line-height:1.15}
+.hbar h1 span{display:block;font-size:12.5px;font-weight:500;color:var(--muted);letter-spacing:.2px}
+#estado{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;padding:7px 16px;background:var(--brand-50);color:var(--brand-dd);border-top:3px solid var(--brand)}
+#estado .dot{width:9px;height:9px;border-radius:50%;background:var(--brand);flex:none}
+#estado.off{background:var(--amberbg);color:#6b3d00;border-top-color:#e09a2b} #estado.off .dot{background:#e09a2b}
+#estado.err{background:var(--redbg);color:var(--red);border-top-color:var(--red)} #estado.err .dot{background:var(--red)}
+main{padding:16px 14px 112px;max-width:760px;margin:0 auto}
 nav{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;border:0;background:none;padding:12px 4px 14px;font-size:15px;font-weight:600;color:var(--muted)}
-nav button .ic{display:block;font-size:22px;line-height:1.1}
-nav button.on{color:var(--green)}
-nav button .badge{display:inline-block;min-width:20px;padding:0 6px;border-radius:10px;background:var(--amber);color:#fff;font-size:12px;margin-left:4px}
-.card{background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:12px;box-shadow:0 1px 0 var(--line)}
-.lbl{display:block;font-size:14px;font-weight:600;color:var(--muted);margin:0 0 6px}
+nav button{flex:1;border:0;background:none;padding:9px 4px 11px;font-size:13px;font-weight:600;color:var(--muted);position:relative;letter-spacing:.2px}
+nav button svg{display:block;margin:0 auto 3px;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--brand-d)}
+nav button.on::before{content:"";position:absolute;top:-1px;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--brand)}
+nav button .badge{position:absolute;top:5px;left:calc(50% + 8px);min-width:18px;padding:0 5px;border-radius:9px;background:var(--amber);color:#fff;font-size:11px;line-height:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.lbl{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:0 0 8px;text-transform:uppercase;letter-spacing:.6px}
 .row{display:flex;gap:10px;align-items:center}
 .grow{flex:1;min-width:0}
 input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}
-.row input[type=date]{font-size:18px;padding:8px}
-.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.row input[type=date]{font-size:17px;padding:8px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
-.btn{display:block;width:100%;min-height:58px;border-radius:12px;border:2px solid var(--line);background:#fff;font-weight:700;font-size:18px;padding:8px 10px;text-align:center}
-.btn small{display:block;font-weight:500;font-size:13px;color:var(--muted)}
-.btn.sel{border-color:var(--green);background:var(--greenbg);color:var(--green)}
-.btn.pri{background:var(--green);border-color:var(--green);color:#fff;min-height:68px;font-size:20px}
-.btn.pri:active{background:var(--green2)}
-.btn.sec{background:#fff;border-color:var(--green);color:var(--green)}
+.btn{display:block;width:100%;min-height:56px;border-radius:8px;border:1px solid var(--line2);background:#fff;font-weight:700;font-size:17px;padding:8px 10px;text-align:center;color:var(--ink)}
+.btn small{display:block;font-weight:500;font-size:12.5px;color:var(--muted);margin-top:1px}
+.btn.sel{border:2px solid var(--brand);background:var(--brand-50);color:var(--brand-dd);padding:7px 9px}
+.btn.pri{background:var(--brand-d);border-color:var(--brand-d);color:#fff;min-height:62px;font-size:18px;letter-spacing:.2px}
+.btn.pri:active{background:var(--brand-dd)}
+.btn.sec{border-color:var(--brand-d);color:var(--brand-d)}
 .btn.dan{border-color:var(--red);color:var(--red)}
-.btn.done small{color:var(--green)}
+.btn.done{border-color:var(--brand-100);background:#f8fcf8}
+.btn.done small{color:var(--brand-d);font-weight:700}
 .btn:disabled{opacity:.45}
 .mt{margin-top:10px}
-input.big,select.big{width:100%;min-height:56px;border:2px solid var(--line);border-radius:12px;padding:8px 12px;background:#fff;font-size:20px}
-input.num{width:100%;min-height:68px;border:2px solid var(--line);border-radius:12px;padding:6px 14px;font-size:32px;font-weight:700;background:#fff}
-input.big:focus,input.num:focus,textarea:focus,select.big:focus{outline:none;border-color:var(--green)}
-textarea{width:100%;min-height:70px;border:2px solid var(--line);border-radius:12px;padding:10px;font-size:18px}
-.field{margin-bottom:16px}
-.field .lbl{font-size:17px;color:var(--ink)}
+input.big,select.big{width:100%;min-height:52px;border:1px solid var(--line2);border-radius:8px;padding:8px 12px;background:#fff;font-size:18px}
+input.num{width:100%;min-height:64px;border:1px solid var(--line2);border-radius:8px;padding:6px 14px;font-size:30px;font-weight:700;background:#fff;font-variant-numeric:tabular-nums}
+input.big:focus,input.num:focus,textarea:focus,select.big:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-100)}
+textarea{width:100%;min-height:70px;border:1px solid var(--line2);border-radius:8px;padding:10px;font-size:17px}
+.field{margin-bottom:18px}
+.field:last-child{margin-bottom:0}
+.field .lbl{font-size:15px;text-transform:none;letter-spacing:0;color:var(--ink)}
 .field .lbl span{color:var(--muted);font-weight:500}
-.prev{font-size:15px;color:var(--muted);margin-top:4px;min-height:20px}
+.prev{font-size:14px;color:var(--muted);margin-top:5px;min-height:20px}
 .prev b{color:var(--ink)}
 .prev .warn{color:var(--amber);font-weight:700}
-.zhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
-.zhead h2{margin:0;font-size:22px}
-.link{border:0;background:none;color:var(--green);font-weight:700;padding:10px 0;font-size:16px}
-.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 2px}
-.bar i{display:block;height:100%;background:var(--green)}
-.plant{display:flex;align-items:center;gap:12px;width:100%;min-height:66px;border:2px solid var(--line);border-radius:12px;background:#fff;padding:8px 12px;margin-bottom:8px;text-align:left}
-.plant .ck{flex:none;width:34px;height:34px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;color:#fff}
-.plant.done{border-color:#b9d4bc}
-.plant.done .ck{background:var(--green);border-color:var(--green)}
-.plant .id{font-weight:800;font-size:18px}
-.plant .sm{font-size:14px;color:var(--muted)}
-.tag{display:inline-block;font-size:12px;font-weight:700;padding:1px 7px;border-radius:8px;background:var(--amberbg);color:var(--amber);margin-left:6px}
-.tag.ok{background:var(--greenbg);color:var(--green)}
+.zhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.zhead h2{margin:0;font-size:21px;color:var(--brand-dd)}
+.link{border:0;background:none;color:var(--brand-d);font-weight:700;padding:10px 0;font-size:15px;white-space:nowrap}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:8px 0 4px}
+.bar i{display:block;height:100%;background:var(--brand)}
+.plant{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;border:1px solid var(--line);border-left:4px solid var(--line2);border-radius:8px;background:#fff;padding:8px 12px;margin-bottom:6px;text-align:left}
+.plant .ck{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--line2);display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff}
+.plant.done{border-left-color:var(--brand)}
+.plant.done .ck{background:var(--brand);border-color:var(--brand)}
+.plant .id{font-weight:700;font-size:17px;font-variant-numeric:tabular-nums}
+.plant .sm{font-size:13.5px;color:var(--muted)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--amberbg);color:var(--amber);margin-left:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:2px}
+.tag.ok{background:var(--brand-50);color:var(--brand-d)}
 .tag.red{background:var(--redbg);color:var(--red)}
 .tog{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tog .btn.sel.si{border-color:var(--red);background:var(--redbg);color:var(--red)}
-.list .it{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left}
+.list .it{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left}
 .list .it:last-child{border-bottom:0}
 .muted{color:var(--muted);font-size:14px}
-.note{background:var(--amberbg);color:#5e3d07;border-radius:12px;padding:10px 12px;font-size:15px;margin-bottom:12px}
-.note.g{background:var(--greenbg);color:#1f3f27}
-#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#1c271f;color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;z-index:20;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.note{background:var(--amberbg);color:#5a3500;border:1px solid #f3d9a8;border-radius:8px;padding:10px 12px;font-size:14.5px;margin-bottom:12px}
+.note.g{background:var(--brand-50);color:var(--brand-dd);border-color:var(--brand-100)}
+#toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:var(--brand-dd);color:#fff;padding:11px 18px;border-radius:8px;font-weight:600;font-size:15px;z-index:20;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 #toast.show{opacity:1}
-#modal{position:fixed;inset:0;background:rgba(20,28,22,.55);z-index:30;display:none;align-items:flex-end;justify-content:center}
+#modal{position:fixed;inset:0;background:rgba(15,25,19,.5);z-index:30;display:none;align-items:flex-end;justify-content:center}
 #modal.show{display:flex}
-#modal .box{background:#fff;width:100%;max-width:720px;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
-#modal h3{margin:0 0 10px;font-size:21px}
-#modal ul{margin:0 0 14px;padding-left:20px;font-size:17px}
+#modal .box{background:#fff;width:100%;max-width:760px;border-radius:14px 14px 0 0;padding:20px 16px calc(18px + env(safe-area-inset-bottom));border-top:4px solid var(--brand)}
+#modal h3{margin:0 0 10px;font-size:19px;color:var(--brand-dd)}
+#modal ul{margin:0 0 14px;padding-left:20px;font-size:16px}
 #modal li{margin-bottom:6px}
-.chk{display:flex;align-items:center;gap:12px;min-height:48px;font-size:17px}
-.chk input{width:26px;height:26px}
-h3.sec{font-size:16px;margin:4px 0 10px}
+.chk{display:flex;align-items:center;gap:12px;min-height:46px;font-size:16px}
+.chk input{width:22px;height:22px;accent-color:var(--brand-d)}
+h3.sec{font-size:15px;margin:0 0 12px;color:var(--brand-dd)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{min-height:46px;min-width:60px;border-radius:8px;border:1px solid var(--line2);background:#fff;font-weight:700;font-size:15px;padding:4px 12px}
+.chip small{display:block;font-weight:500;font-size:11.5px;color:var(--muted)}
+.chip.sel{border:2px solid var(--brand);background:var(--brand-50);color:var(--brand-dd);padding:3px 11px}
+.chip.done small{color:var(--brand-d);font-weight:700}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;margin-top:18px}
 </style>
 </head>
 <body>
 <header>
-  <h1>🌱 Mediciones vivero</h1>
+  <div class="hbar"><img src="logo.png" alt=""><h1>Mediciones de plantas<span>Indicadores semanales de vivero</span></h1></div>
   <div id="estado"><span class="dot"></span><span id="estadoTxt">Cargando…</span></div>
 </header>
 <main id="main"></main>
 <nav>
-  <button data-nav="medir"><span class="ic">📏</span>Medir</button>
-  <button data-nav="datos"><span class="ic">📋</span>Datos<span id="navBadge"></span></button>
-  <button data-nav="ajustes"><span class="ic">⚙️</span>Ajustes</button>
+  <button data-nav="medir"><svg viewBox="0 0 24 24"><rect x="2.5" y="7.5" width="19" height="9" rx="1.5"/><path d="M6.5 7.5v3M10 7.5v4.5M13.5 7.5v3M17 7.5v4.5"/></svg>Medir</button>
+  <button data-nav="datos"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Datos<span id="navBadge"></span></button>
+  <button data-nav="ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
 </nav>
 <div id="toast"></div>
 <div id="modal"><div class="box" id="modalBox"></div></div>
@@ -120,6 +133,7 @@ const CONFIG = {
     { id: 'V2', nombre: 'Vivero 2' },
     { id: 'V3', nombre: 'Vivero 3' },
     { id: 'CAMPAS', nombre: 'Campas' },
+    { id: 'Proyectos', nombre: 'Proyectos' },
   ],
   // [vivero, zona, sectores de riego]  (copiado de la hoja ZONAS)
   zonas: [
@@ -131,13 +145,24 @@ const CONFIG = {
     ['V3','VIVERO 3B','3B-41, 3B-42'],
     ['CAMPAS','CAMPA 1A','1-39, 1-40'], ['CAMPAS','EXPLANADA ERA','1-37'], ['CAMPAS','EXP ERA S6','1-6'],
     ['CAMPAS','EXP ERA S10','1-10'], ['CAMPAS','EXP 2B S26','2-26'],
+    ['Proyectos','LEV2050',''],
   ],
-  // Plantas indicadoras de cada zona: [ID, sector]  (copiado de la hoja DATOS)
+  // Plantas indicadoras de cada zona: [ID, sector] o solo 'ID' si no tiene sector
   plantas: {
     'V1 · 3AC': [['A2CF5S2 1.1',32],['A2CF5S2 1.2',32],['A3CF5S3 1.1',32],['A3CF5S3 1.2',32],
                  ['A4CF5S4 1.1',32],['A4CF5S4 1.2',32],['A5CF5S5 1.1',32],['A5CF5S5 1.2',32]],
     'V1 · 3AN': [['A2NF5S2 1.1',33],['A2NF5S2 1.2',33],['A3NF5S3 1.1',33],['A3NF5S3 1.2',33],
                  ['A4NF5S4 1.1',33],['A4NF5S4 1.2',33],['A5NF5S5 1.1',33],['A5NF5S5 1.2',33]],
+    'Proyectos · LEV2050': [
+      'F1Z1-1','F1Z1-2','F1Z1-3','F1Z2-1','F1Z2-2','F1Z2-3','F1Z3-1','F1Z3-2','F1Z3-3','F1Z4-1','F1Z4-2','F1Z4-3',
+      'F2Z1-1','F2Z1-2','F2Z1-3','F2Z2-1','F2Z2-2','F2Z2-3','F2Z3-1','F2Z3-2','F2Z3-3','F2Z4-1','F2Z4-2','F2Z4-3',
+      'F3Z1-1','F3Z1-2','F3Z1-3','F3Z2-1','F3Z2-2','F3Z2-3','F3Z3-1','F3Z3-2','F3Z3-3','F3Z4-1','F3Z4-2','F3Z4-3',
+      'F4Z1-1','F4Z1-2','F4Z1-3','F4Z2-1','F4Z2-2','F4Z2-3','F4Z3-1','F4Z3-2','F4Z3-3','F4Z4-1','F4Z4-2','F4Z4-3',
+      'F5Z1-1','F5Z1-2','F5Z1-3','F5Z2-1','F5Z2-2','F5Z2-3','F5Z3-1','F5Z3-2','F5Z3-3','F5Z4-1','F5Z4-2','F5Z4-3',
+      'F6Z1-1','F6Z1-2','F6Z1-3','F6Z2-1','F6Z2-2','F6Z2-3','F6Z3-1','F6Z3-2','F6Z3-3','F6Z4-1','F6Z4-2','F6Z4-3',
+      'F7Z1-1','F7Z1-2','F7Z1-3','F7Z2-1','F7Z2-2','F7Z2-3','F7Z3-1','F7Z3-2','F7Z3-3','F7Z4-1','F7Z4-2','F7Z4-3',
+      'F8Z1-1','F8Z1-2','F8Z1-3','F8Z2-1','F8Z2-2','F8Z2-3','F8Z3-1','F8Z3-2','F8Z3-3','F8Z4-1','F8Z4-2','F8Z4-3',
+      'F9Z1-1','F9Z1-2','F9Z1-3','F9Z2-1','F9Z2-2','F9Z2-3','F9Z3-1','F9Z3-2','F9Z3-3','F9Z4-1','F9Z4-2','F9Z4-3'],
   },
   // Mediciones ya apuntadas en el Excel (solo sirven para comparar con la semana anterior; no se exportan)
   historico: [
@@ -230,7 +255,7 @@ const vivos = () => records.filter(r => !r.borrado && r.campana===cfg.campana);
 function plantasDe(et){
   const out=[], seen=new Set();
   const add=(id,sector,extra)=>{ id=String(id).trim(); if(!id||seen.has(id)) return; seen.add(id); out.push({id,sector,extra}); };
-  (CONFIG.plantas[et]||[]).forEach(p=>add(p[0],p[1],false));
+  (CONFIG.plantas[et]||[]).forEach(p=>Array.isArray(p)?add(p[0],p[1]??'',false):add(p,'',false));
   (extras[et]||[]).forEach(p=>add(p[0],p[1],true));
   vivos().filter(r=>r.etiqueta===et && !r.historico).sort((a,b)=>a.id.localeCompare(b.id)).forEach(r=>add(r.id,r.sector,false));
   return out;
@@ -295,8 +320,8 @@ function vMedir(){
     <div class="row"><input class="big grow" type="date" id="fecha" value="${S.fecha}" data-ch="fecha">
     <div style="min-width:80px;font-weight:700">${fFecha(S.fecha)}</div></div></div>`;
   if(!S.etiqueta){
-    h += `<div class="card"><span class="lbl">Vivero</span><div class="seg">` +
-      CONFIG.viveros.map(v=>`<button class="btn ${S.vivero===v.id?'sel':''}" data-act="vivero" data-v="${v.id}">${v.id}<small>${esc(v.nombre)}</small></button>`).join('') +
+    h += `<div class="card"><span class="lbl">Vivero o proyecto</span><div class="seg">` +
+      CONFIG.viveros.map(v=>`<button class="btn ${S.vivero===v.id?'sel':''}" data-act="vivero" data-v="${esc(v.id)}">${esc(v.id)}${v.nombre!==v.id?'<small>'+esc(v.nombre)+'</small>':''}</button>`).join('') +
       `</div></div>`;
     if(S.vivero){
       h += `<div class="card"><span class="lbl">Zona</span><div class="grid">` +
@@ -316,18 +341,29 @@ function vMedir(){
     <div class="bar"><i style="width:${pl.length?Math.round(hechas/pl.length*100):0}%"></i></div>
     <label class="lbl mt" for="finj">Fecha de injerto de la zona (opcional)</label>
     <input class="big" type="date" id="finj" value="${zi.fechaInjerto||''}" data-ch="finj"></div>`;
+  // Si la zona tiene muchas plantas tipo F1Z1-1, se agrupan por F1, F2… para no tener una lista enorme
+  const grupoDe = id => (String(id).match(/^(F\d+)Z/i)||[])[1];
+  const grupos = [...new Set(pl.map(p=>grupoDe(p.id)).filter(Boolean))];
+  let lista = pl;
+  if(pl.length>20 && grupos.length>1){
+    if(S.grupo && !grupos.includes(S.grupo)) S.grupo=null;
+    h += `<div class="chips"><button class="chip ${!S.grupo?'sel':''}" data-act="grupo" data-g="">Todas<small>${hechas}/${pl.length}</small></button>` +
+      grupos.map(g=>{ const pg=pl.filter(p=>grupoDe(p.id)===g), hg=pg.filter(p=>medicionDe(et,p.id,S.fecha).rec).length;
+        return `<button class="chip ${S.grupo===g?'sel':''} ${hg===pg.length?'done':''}" data-act="grupo" data-g="${g}">${g}<small>${hg===pg.length?'✓ ':''}${hg}/${pg.length}</small></button>`; }).join('') + `</div>`;
+    if(S.grupo) lista = pl.filter(p=>grupoDe(p.id)===S.grupo);
+  }
   if(!pl.length) h += `<div class="note">Esta zona todavía no tiene plantas indicadoras. Añádelas con el botón de abajo (pon el mismo ID que usáis en el Excel).</div>`;
-  h += pl.map(p=>{
+  h += lista.map(p=>{
     const {rec,n}=medicionDe(et,p.id,S.fecha);
     let res='Pendiente';
     if(rec){
       res = CONFIG.campos.filter(c=>rec[c.k]!=null&&rec[c.k]!=='').map(c=>c.label.replace('Altura ','').replace('Diámetro a 70 cm','Ø70')+' '+fN(rec[c.k])).join(' · ') || 'Solo comentario';
-      if(rec.enfermedad==='Sí') res += ' · 🦠';
+      if(rec.enfermedad==='Sí') res += ' · Enfermedad';
     }
     return `<button class="plant ${rec?'done':''}" data-act="planta" data-id="${esc(p.id)}">
       <span class="ck">${rec?'✓':''}</span>
       <span class="grow"><span class="id">${esc(p.id)}</span>${n>1?'<span class="tag">'+n+' mediciones</span>':''}${rec&&!rec.synced&&cfg.url?'<span class="tag">sin enviar</span>':''}
-      <br><span class="sm">Sector ${esc(p.sector)} · ${esc(res)}</span></span>
+      <br><span class="sm">${p.sector!==''&&p.sector!=null?'Sector '+esc(p.sector)+' · ':''}${esc(res)}</span></span>
       ${p.extra && !vivos().some(r=>r.etiqueta===et&&r.id===p.id) ? `<span data-act="quitarPlanta" data-id="${esc(p.id)}" style="padding:10px;font-size:20px;color:var(--muted)">✕</span>`:''}
     </button>`;
   }).join('');
@@ -338,7 +374,7 @@ function vMedir(){
 function vForm(){
   const et=S.etiqueta, p=plantasDe(et).find(x=>x.id===S.planta) || {id:S.planta, sector:''};
   const {rec}=medicionDe(et,p.id,S.fecha), ant=anteriorDe(et,p.id,S.fecha);
-  let h=`<div class="zhead"><button class="link" data-act="volver">← Volver</button><span class="muted">${esc(et)} · sector ${esc(p.sector)}</span></div>
+  let h=`<div class="zhead"><button class="link" data-act="volver">← Volver</button><span class="muted">${esc(et)}${p.sector!==''&&p.sector!=null?' · sector '+esc(p.sector):''}</span></div>
     <div class="card"><h2 style="margin:0 0 2px;font-size:26px">${esc(p.id)}</h2>
     <div class="muted">${fFecha(S.fecha)}${rec?' · <b>editando</b>':''}${ant?' · anterior: '+fFecha(ant.fecha):' · sin medición anterior'}</div></div><div class="card">`;
   CONFIG.campos.filter(c=>cfg.campos[c.k]!==false).forEach(c=>{
@@ -374,8 +410,8 @@ function pistaCampo(el){
   if(el.value.trim()!=='' && isNaN(v)) t += ' <span class="warn">· no es un número</span>';
   else if(!isNaN(v) && !isNaN(pv) && el.value.trim()!==''){
     const dif=v-pv, raro = revisar({[c.k]:v}, ant, S.fecha).length>0;
-    t += ` → <span class="${raro?'warn':''}">${dif>=0?'+':''}${fN(dif)} ${c.u}${raro?' ⚠':''}</span>`;
-  } else if(!isNaN(v) && v>c.max) t += ' <span class="warn">⚠ valor alto</span>';
+    t += ` → <span class="${raro?'warn':''}">${dif>=0?'+':''}${fN(dif)} ${c.u}${raro?' · revisar':''}</span>`;
+  } else if(!isNaN(v) && v>c.max) t += ' <span class="warn">valor alto</span>';
   box.innerHTML=t;
 }
 
@@ -393,7 +429,7 @@ function vDatos(){
   h+=`<div class="card"><h3 class="sec">Descargar para el Excel</h3>
     <div class="row"><div class="grow"><label class="lbl" for="exDesde">Desde</label><input class="big" type="date" id="exDesde" value="${desde}" data-ch="ex"></div>
     <div class="grow"><label class="lbl" for="exHasta">Hasta</label><input class="big" type="date" id="exHasta" value="${hasta}" data-ch="ex"></div></div>
-    <label class="lbl mt" for="exViv">Vivero</label><select class="big" id="exViv" data-ch="ex"><option value="">Todos</option>
+    <label class="lbl mt" for="exViv">Vivero o proyecto</label><select class="big" id="exViv" data-ch="ex"><option value="">Todos</option>
     ${CONFIG.viveros.map(v=>`<option value="${v.id}" ${S.exViv===v.id?'selected':''}>${esc(v.nombre)}</option>`).join('')}</select>
     <button class="btn pri mt" data-act="excel" id="btnExcel">Descargar Excel</button>
     <p class="muted">El archivo tiene las mismas 21 columnas que la hoja <b>DATOS</b>, con las fórmulas. Copia las filas y pégalas en DATOS a partir de la primera fila sin «Fecha medición».</p></div>`;
@@ -412,7 +448,7 @@ function vAjustes(){
   const c=cfg;
   let h=avisoInstalar(true);
   h+=`<div class="card"><h3 class="sec">General</h3>
-    <label class="lbl" for="aNombre">Tu nombre (queda apuntado en cada medición)</label><input class="big" id="aNombre" value="${esc(c.nombre)}" data-ch="cfg" data-k="nombre">
+    <label class="lbl" for="aNombre">Tu nombre</label><input class="big" id="aNombre" value="${esc(c.nombre)}" data-ch="cfg" data-k="nombre">
     <div class="row mt"><div class="grow"><label class="lbl" for="aCamp">Campaña</label><input class="big" id="aCamp" value="${esc(c.campana)}" data-ch="cfg" data-k="campana"></div>
     <div class="grow"><label class="lbl" for="aIni">Inicio campaña</label><input class="big" type="date" id="aIni" value="${esc(c.inicio)}" data-ch="cfg" data-k="inicio"></div></div>
     <p class="muted">«Inicio campaña» es la fecha que usa la fórmula «Semana campaña» del Excel (ahora 9/11/2026).</p></div>
@@ -429,8 +465,8 @@ function vAjustes(){
     <button class="btn sec" data-act="backup">Descargar copia (archivo .json)</button>
     <label class="btn sec mt" style="cursor:pointer">Cargar copia<input type="file" accept=".json,application/json" id="aRestore" data-ch="restore" style="display:none"></label>
     <p class="muted">Sirve para pasar las mediciones de un móvil a otro sin internet.
-    ${Store.mode==='ls'?'<br>⚠ Este navegador usa almacenamiento reducido.':''}<span id="persist"></span></p></div>
-  <p class="muted" style="text-align:center">Dispositivo ${dispositivo} · v1</p>`;
+    ${Store.mode==='ls'?'<br>Atención: este navegador usa almacenamiento reducido.':''}<span id="persist"></span></p></div>
+  <p class="foot">Dispositivo ${dispositivo} · versión 3</p>`;
   setTimeout(async()=>{ try{ if(navigator.storage&&navigator.storage.persisted){ const p=await navigator.storage.persisted(); const el=document.getElementById('persist'); if(el) el.innerHTML='<br>'+(p?'✓ El navegador no borrará estos datos.':'Los datos se guardan en el navegador: no borres los datos del navegador ni desinstales la app con mediciones sin enviar.'); } }catch(e){} },0);
   return h;
 }
@@ -455,7 +491,8 @@ document.addEventListener('click', async e=>{
   const b=e.target.closest('[data-act]'); if(!b) return;
   const a=b.dataset.act;
   if(a==='vivero'){ S.vivero=b.dataset.v; render(); }
-  else if(a==='zona'){ S.etiqueta=b.dataset.et; render(); scrollTo(0,0); }
+  else if(a==='zona'){ S.etiqueta=b.dataset.et; S.grupo=null; render(); scrollTo(0,0); }
+  else if(a==='grupo'){ S.grupo=b.dataset.g||null; render(); }
   else if(a==='cambiarZona'){ S.etiqueta=null; render(); }
   else if(a==='quitarPlanta'){ e.stopPropagation(); const id=b.dataset.id; extras[S.etiqueta]=(extras[S.etiqueta]||[]).filter(p=>p[0]!==id); LS.set('plantasExtra',extras); render(); }
   else if(a==='planta'){ S.planta=b.dataset.id; S.view='form'; render(); scrollTo(0,0); }
@@ -505,7 +542,7 @@ async function guardar(siguiente, forzar){
   if(errores.length){ modal(`<h3>Revisa estos datos</h3><ul>${errores.map(x=>'<li>'+x+'</li>').join('')}</ul><button class="btn pri" data-act="cerrar">Corregir</button>`); return; }
   if(!forzar){
     const av=revisar(vals, S._ant, S.fecha);
-    if(av.length){ S._next=siguiente; modal(`<h3>⚠ ¿Seguro?</h3><ul>${av.map(x=>'<li>'+x+'</li>').join('')}</ul>
+    if(av.length){ S._next=siguiente; modal(`<h3>Comprueba estos valores</h3><ul>${av.map(x=>'<li>'+x+'</li>').join('')}</ul>
       <button class="btn pri" data-act="cerrar">Corregir</button><button class="btn sec mt" data-act="forzar">Está bien, guardar igualmente</button>`); return; }
   }
   const et=S.etiqueta, [viv,zona]=et.split(' · '), p=plantasDe(et).find(x=>x.id===S.planta)||{sector:''};
@@ -521,7 +558,7 @@ async function guardar(siguiente, forzar){
   if(siguiente){
     const pl=plantasDe(et), i=pl.findIndex(x=>x.id===S.planta);
     const sig=[...pl.slice(i+1),...pl.slice(0,i)].find(x=>!medicionDe(et,x.id,S.fecha).rec);
-    if(sig){ S.planta=sig.id; render(); scrollTo(0,0); return; }
+    if(sig){ S.planta=sig.id; const g=(String(sig.id).match(/^(F\d+)Z/i)||[])[1]; if(S.grupo&&g) S.grupo=g; render(); scrollTo(0,0); return; }
     toast('✓ Zona completa');
   }
   S.view='medir'; S.planta=null; render(); scrollTo(0,0);

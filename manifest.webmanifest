@@ -1,5 +1,5 @@
 {
-  "name": "Mediciones vivero",
+  "name": "Mediciones de plantas",
   "short_name": "Mediciones",
   "description": "Mediciones semanales de plantas, funciona sin internet",
   "lang": "es",
@@ -7,8 +7,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f3f0e8",
-  "theme_color": "#2f5d3a",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
